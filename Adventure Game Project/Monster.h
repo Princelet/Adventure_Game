@@ -5,6 +5,10 @@
 class Monster
 {
 public:
+
+	Monster();
+	~Monster();
+
 	std::string name;
 	std::string description;
 	int health;

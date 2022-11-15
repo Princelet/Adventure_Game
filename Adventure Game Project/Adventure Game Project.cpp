@@ -9,6 +9,7 @@
 #include "Feature.h"
 #include "Monster.h"
 
+
 void printPlayer(int HP, int ATK, std::vector<std::string> equip, std::vector<std::string> inv)
 {
     std::cout << "You currently have " << HP << "HP.\n"
@@ -34,32 +35,6 @@ void printItem(std::string name, std::string desc)
         << "Description: " << desc << "\n\n";
 }
 
-void printArea(std::string name, std::string desc,
-    std::vector<std::string> contents, std::vector<std::string> exits)
-{
-    std::cout << "This area is " << name << ".\n"
-        << "Description: " << desc << "\n\n"
-        << "This room contains:\n";
-
-    for (int i = 0; i < contents.size(); ++i)
-    {
-        std::cout << contents[i] << "\n";
-    }
-
-    std::cout << "\nThe room has exits in the directions:\n";
-
-    for (int i = 0; i < exits.size(); ++i)
-    {
-        std::cout << exits[i] << "\n";
-    }
-}
-
-void printFeature(std::string name, std::string desc)
-{
-    std::cout << "The deature is a(n) " << name << ".\n"
-        << "Description: " << desc << "\n\n";
-}
-
 void printMonster(std::string name, std::string desc, int ATK, int HP)
 {
     std::cout << "The item is a(n) " << name << ".\n"
@@ -70,12 +45,13 @@ void printMonster(std::string name, std::string desc, int ATK, int HP)
 
 int main()
 {
+    std::string playerResponse = "";
+
     Player player;
     player.health = 100;
     player.attack = 10;
     player.equipment;
     player.inventory;
-    // unsure how to add to vector outside
 
 
     Item potion;
@@ -87,15 +63,6 @@ int main()
     key.description = "A small key to unlock a locked door.";
     rock.name = "Small Rock";
     rock.description = "A small rock found on the ground.";
-
-
-    Area roomA;
-    Area roomB;
-    Area roomC;
-    roomA.name = "Room A";
-    roomA.description = "A square room filled with pebbles and rocks.";
-    roomA.contents;
-    roomA.exits;
 
 
     Feature vines;
@@ -118,4 +85,58 @@ int main()
     bat.description = "A little guy.";
     skeleton.name = "Skeleton Knight";
     skeleton.description = "A tough armoured knight of the undead.";
+
+
+    Area roomA;
+    Area roomB;
+    Area roomC;
+    roomA.name = "Room A";
+    roomA.description = "A square room filled with pebbles and rocks.";
+    roomA.contents.push_back(&bones);
+    roomA.contents.push_back(&vines);
+    roomA.exits.push_back(&roomB);
+    roomA.exits.push_back(&roomC);
+
+    roomB.name = "Room B";
+    roomB.description = "A long room that is empty besides a few old pieces of furniture.";
+    roomB.contents.push_back(&chest);
+    roomB.exits.push_back(&roomA);
+
+    roomC.name = "Room C";
+    roomC.description = "A compact room filled with foliage and broken equipment.";
+    roomC.contents.push_back(&vines);
+    roomC.contents.push_back(&chest);
+    roomC.exits.push_back(&roomA);
+
+
+
+    player.currentArea = &roomA;
+    player.currentArea->LookAround();
+
+    do
+    {
+        std::cout << "\n\nWhat do you want to do?" << std::endl;
+        std::getline(std::cin, playerResponse);
+
+        if (playerResponse == "look")
+        {
+            player.currentArea->LookAround();
+        }
+        else if (playerResponse == "go")
+        {
+            player.currentArea = player.currentArea->AttemptGo();
+
+            std::cout << "\nYou are now in " << player.currentArea->name << ".\n\n" << std::endl;
+        }
+        else if (playerResponse == "examine")
+        {
+            player.currentArea->Examine();
+        }
+        else
+        {
+            std::cout << "\n\nThat don't work so good!\n\n" << std::endl;
+        }
+
+    } while (playerResponse != "escape");
+
 }
