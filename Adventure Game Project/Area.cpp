@@ -23,7 +23,7 @@ void Area::LookAround()
 
     for (int i = 0; i < contents.size(); ++i)
     {
-        std::cout << this->contents[i]->name << std::endl;
+        std::cout << this->contents[i]->GetName() << std::endl;
     }
 
     // Areas
@@ -41,7 +41,7 @@ Area* Area::AttemptGo()
 
     for (int i = 0; i < exits.size(); ++i)
     {
-        std::cout << this->exits[i]->name << std::endl;
+        std::cout << this->exits[i]->GetName() << std::endl;
     }
 
     std::string response;
@@ -50,7 +50,7 @@ Area* Area::AttemptGo()
 
     for (int i = 0; i < exits.size(); ++i)
     {
-        if (exits[i]->name == response)
+        if (exits[i]->GetName() == response)
         {
             return exits[i];
         }
@@ -64,7 +64,7 @@ void Area::Examine()
 
     for (int i = 0; i < contents.size(); ++i)
     {
-        std::cout << this->contents[i]->name << std::endl;
+        std::cout << this->contents[i]->GetName() << std::endl;
     }
 
     std::string response;
@@ -76,10 +76,40 @@ void Area::Examine()
 
         for (int i = 0; i < contents.size(); ++i)
         {
-            if (contents[i]->name == response)
+            if (contents[i]->GetName() == response)
             {
-                std::cout << "\n" << contents[i]->description << "\n" << std::endl;
+                std::cout << "\n" << contents[i]->GetDescription() << "\n" << std::endl;
             }
         }
     } while (response != "stop");
+}
+
+void Area::SetName(std::string newName)
+{
+    name = newName;
+}
+
+void Area::SetDescription(std::string newDesc)
+{
+    description = newDesc;
+}
+
+void Area::AddContents(Feature* newContent)
+{
+    contents.push_back(newContent);
+}
+
+void Area::AddExits(Area* newExit)
+{
+    exits.push_back(newExit);
+}
+
+std::string Area::GetName()
+{
+    return this->name;
+}
+
+std::vector<Area*> Area::GetExits()
+{
+    return this->exits;
 }

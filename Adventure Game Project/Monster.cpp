@@ -11,3 +11,13 @@ Monster::Monster()
 Monster::~Monster()
 {
 }
+
+void Monster::SetName(std::string newName)
+{
+	name = newName;
+}
+
+void Monster::SetDescription(std::string newDesc)
+{
+	description = newDesc;
+}

@@ -48,70 +48,67 @@ int main()
     std::string playerResponse = "";
 
     Player player;
-    player.health = 100;
-    player.attack = 10;
-    player.equipment;
-    player.inventory;
-
+    player.SetHealth(100);
+    player.SetAttack(10);
 
     Item potion;
     Item key;
     Item rock;
-    potion.name = "Potion";
-    potion.description = "A healing potion. Restores 50 health.";
-    key.name = "Small Key";
-    key.description = "A small key to unlock a locked door.";
-    rock.name = "Small Rock";
-    rock.description = "A small rock found on the ground.";
+    potion.SetName("Potion");
+    potion.SetDescription("A healing potion. Restores 50 health.");
+    key.SetName("Small Key");
+    key.SetDescription("A small key to unlock a locked door.");
+    rock.SetName("Small Rock");
+    rock.SetDescription("A small rock found on the ground.");
 
 
     Feature vines;
     Feature chest;
     Feature bones;
-    vines.name = "Vines";
-    vines.description = "These vines cover the walls of the room.";
-    chest.name = "Opened Chest";
-    chest.description = "This chest looks to have been looted long ago.";
-    bones.name = "Cracked Bones";
-    bones.description = "The bones laying on the ground are cracked and covered in web.";
+    vines.SetName("Vines");
+    vines.SetDescription("These vines cover the walls of the room.");
+    chest.SetName("Opened Chest");
+    chest.SetDescription("This chest looks to have been looted long ago.");
+    bones.SetName("Cracked Bones");
+    bones.SetDescription("The bones laying on the ground are cracked and covered in web.");
 
 
     Monster goblin;
     Monster bat;
     Monster skeleton;
-    goblin.name = "Goblin Warrior";
-    goblin.description = "A frail goblin warrior. Small and nimble.";
-    bat.name = "Cave Bat";
-    bat.description = "A little guy.";
-    skeleton.name = "Skeleton Knight";
-    skeleton.description = "A tough armoured knight of the undead.";
+    goblin.SetName("Goblin Warrior");
+    goblin.SetDescription("A frail goblin warrior. Small and nimble.");
+    bat.SetName("Cave Bat");
+    bat.SetDescription("A little guy.");
+    skeleton.SetName("Skeleton Knight");
+    skeleton.SetDescription("A tough armoured knight of the undead.");
 
 
     Area roomA;
     Area roomB;
     Area roomC;
-    roomA.name = "Room A";
-    roomA.description = "A square room filled with pebbles and rocks.";
-    roomA.contents.push_back(&bones);
-    roomA.contents.push_back(&vines);
-    roomA.exits.push_back(&roomB);
-    roomA.exits.push_back(&roomC);
+    roomA.SetName("Room A");
+    roomA.SetDescription("A square room filled with pebbles and rocks.");
+    roomA.AddContents(&bones);
+    roomA.AddContents(&vines);
+    roomA.AddExits(&roomB);
+    roomA.AddExits(&roomC);
 
-    roomB.name = "Room B";
-    roomB.description = "A long room that is empty besides a few old pieces of furniture.";
-    roomB.contents.push_back(&chest);
-    roomB.exits.push_back(&roomA);
+    roomB.SetName("Room B");
+    roomB.SetDescription("A long room that is empty besides a few old pieces of furniture.");
+    roomB.AddContents(&chest);
+    roomB.AddExits(&roomA);
 
-    roomC.name = "Room C";
-    roomC.description = "A compact room filled with foliage and broken equipment.";
-    roomC.contents.push_back(&vines);
-    roomC.contents.push_back(&chest);
-    roomC.exits.push_back(&roomA);
+    roomC.SetName("Room C");
+    roomC.SetDescription("A compact room filled with foliage and broken equipment.");
+    roomC.AddContents(&vines);
+    roomC.AddContents(&chest);
+    roomC.AddExits(&roomA);
 
 
 
-    player.currentArea = &roomA;
-    player.currentArea->LookAround();
+    player.SetLocation(&roomA);
+    player.GetLocation()->LookAround();
 
     do
     {
@@ -120,17 +117,22 @@ int main()
 
         if (playerResponse == "look")
         {
-            player.currentArea->LookAround();
+            player.GetLocation()->LookAround();
         }
         else if (playerResponse == "go")
         {
-            player.currentArea = player.currentArea->AttemptGo();
+            player.SetLocation(player.GetLocation()->AttemptGo());
 
-            std::cout << "\nYou are now in " << player.currentArea->name << ".\n\n" << std::endl;
+            std::cout << "\nYou are now in " << player.GetLocationName() << ".\n\n" << std::endl;
         }
         else if (playerResponse == "examine")
         {
-            player.currentArea->Examine();
+            player.GetLocation()->Examine();
+        }
+        else if (playerResponse == "escape")
+        {
+            std::cout << "\n\nThe floor beneath you crumbles.\n\n" << std::endl;
+            std::cout << "\n\nYou fall.\n\n" << std::endl;
         }
         else
         {
