@@ -1,31 +1,37 @@
 #pragma once
+#include "Thing.h"
 
 #include <string>
 #include <vector>
-#include "Feature.h"
 
-class Area
+class Feature;
+class Monster;
+class Player;
+
+class Area : public Thing
 {
 public:
 	Area();
+	Area(std::string newName, std::string newDescription);
 	~Area();
 
-	void LookAround();
+	void Look();
 	Area* AttemptGo();
 	void Examine();
+	void Fight(Player* player);
 
-	void SetName(std::string newName);
-	void SetDescription(std::string newDesc);
+	// Getters
+	std::vector<Area*> GetExits();
+	Monster* GetMonster();
+
+	// Setters
 	void AddContents(Feature* newContent);
 	void AddExits(Area* newExit);
-
-	std::string GetName();
-	std::vector<Area*> GetExits();
+	void AddMonster(Monster* newMonster);
 
 private:
-	std::string name;
-	std::string description;
 	std::vector<Feature*> contents;
 	std::vector<Area*> exits;
+	Monster* enemy;
 };
 

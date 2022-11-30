@@ -1,10 +1,12 @@
 #include "Monster.h"
 
 Monster::Monster()
-	: name("")
-	, description("")
-	, health(1)
-	, attack(1)
+	: Creature("Dummy", "A beat up training dummy.", 1, 1)
+{
+}
+
+Monster::Monster(std::string newName, std::string newDescription, int newHealth, int newAttack)
+	: Creature(newName, newDescription, newHealth, newAttack)
 {
 }
 
@@ -12,12 +14,3 @@ Monster::~Monster()
 {
 }
 
-void Monster::SetName(std::string newName)
-{
-	name = newName;
-}
-
-void Monster::SetDescription(std::string newDesc)
-{
-	description = newDesc;
-}

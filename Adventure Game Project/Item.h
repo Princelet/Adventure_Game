@@ -1,18 +1,13 @@
 #pragma once
+#include "Thing.h"
 
 #include <string>
 
-class Item
+class Item : public Thing
 {
 public:
 	Item();
+	Item(std::string newName, std::string newDescription);
 	~Item();
-
-	void SetName(std::string newName);
-	void SetDescription(std::string newDesc);
-
-private:
-	std::string name;
-	std::string description;
 };
 

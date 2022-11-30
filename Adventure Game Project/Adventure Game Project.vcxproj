@@ -141,17 +141,21 @@
   <ItemGroup>
     <ClCompile Include="Adventure Game Project.cpp" />
     <ClCompile Include="Area.cpp" />
+    <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Feature.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Thing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Area.h" />
+    <ClInclude Include="Creature.h" />
     <ClInclude Include="Feature.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Thing.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

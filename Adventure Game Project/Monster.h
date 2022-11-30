@@ -1,20 +1,13 @@
 #pragma once
+#include "Creature.h"
 
 #include <string>
 
-class Monster
+class Monster : public Creature
 {
 public:
 	Monster();
+	Monster(std::string newName, std::string newDescription, int newHealth, int newAttack);
 	~Monster();
-
-	void SetName(std::string newName);
-	void SetDescription(std::string newDesc);
-
-private:
-	std::string name;
-	std::string description;
-	int health;
-	int attack;
 };
 

@@ -47,60 +47,34 @@ int main()
 {
     std::string playerResponse = "";
 
-    Player player;
-    player.SetHealth(100);
-    player.SetAttack(10);
+    Player player(30, 5);
 
-    Item potion;
-    Item key;
-    Item rock;
-    potion.SetName("Potion");
-    potion.SetDescription("A healing potion. Restores 50 health.");
-    key.SetName("Small Key");
-    key.SetDescription("A small key to unlock a locked door.");
-    rock.SetName("Small Rock");
-    rock.SetDescription("A small rock found on the ground.");
+    Item potion("Misty Potion", "A healing potion. Restores 10 health.");
+    Item key("Small Key", "A small key to unlock a locked door.");
+    Item rock("Small Rock", "A small rock found on the ground.");
 
+    Feature vines("Vines", "These vines cover the walls of the room.");
+    Feature chest("Opened Chest", "This chest looks to have been looted long ago.");
+    Feature bones("Cracked Bones", "The bones laying on the ground are cracked and covered in web.");
 
-    Feature vines;
-    Feature chest;
-    Feature bones;
-    vines.SetName("Vines");
-    vines.SetDescription("These vines cover the walls of the room.");
-    chest.SetName("Opened Chest");
-    chest.SetDescription("This chest looks to have been looted long ago.");
-    bones.SetName("Cracked Bones");
-    bones.SetDescription("The bones laying on the ground are cracked and covered in web.");
+    Monster goblin("Goblin Warrior", "A frail goblin warrior. Small and nimble.", 5, 3);
+    Monster bat("Cave Bat", "A little guy.", 3, 2);
+    Monster skeleton("Skeleton Knight", "A tough armoured knight of the undead.", 10, 6);
 
 
-    Monster goblin;
-    Monster bat;
-    Monster skeleton;
-    goblin.SetName("Goblin Warrior");
-    goblin.SetDescription("A frail goblin warrior. Small and nimble.");
-    bat.SetName("Cave Bat");
-    bat.SetDescription("A little guy.");
-    skeleton.SetName("Skeleton Knight");
-    skeleton.SetDescription("A tough armoured knight of the undead.");
+    Area roomA("Room A", "A square room filled with pebbles and rocks.");
+    Area roomB("Room B", "A long room that is empty besides a few old pieces of furniture.");
+    Area roomC("Room C", "A compact room filled with foliage and broken equipment.");
 
-
-    Area roomA;
-    Area roomB;
-    Area roomC;
-    roomA.SetName("Room A");
-    roomA.SetDescription("A square room filled with pebbles and rocks.");
     roomA.AddContents(&bones);
     roomA.AddContents(&vines);
     roomA.AddExits(&roomB);
     roomA.AddExits(&roomC);
 
-    roomB.SetName("Room B");
-    roomB.SetDescription("A long room that is empty besides a few old pieces of furniture.");
     roomB.AddContents(&chest);
     roomB.AddExits(&roomA);
+    roomB.AddMonster(&skeleton);
 
-    roomC.SetName("Room C");
-    roomC.SetDescription("A compact room filled with foliage and broken equipment.");
     roomC.AddContents(&vines);
     roomC.AddContents(&chest);
     roomC.AddExits(&roomA);
@@ -108,7 +82,8 @@ int main()
 
 
     player.SetLocation(&roomA);
-    player.GetLocation()->LookAround();
+    std::cout << "You have " << player.GetMaxHealth() << "HP and " << player.GetAttack() << "ATK!" << std::endl;
+    player.GetLocation()->Look();
 
     do
     {
@@ -117,13 +92,18 @@ int main()
 
         if (playerResponse == "look")
         {
-            player.GetLocation()->LookAround();
+            player.GetLocation()->Look();
         }
         else if (playerResponse == "go")
         {
             player.SetLocation(player.GetLocation()->AttemptGo());
 
             std::cout << "\nYou are now in " << player.GetLocationName() << ".\n\n" << std::endl;
+
+            if (player.GetLocation()->GetMonster() != nullptr)
+            {
+                player.GetLocation()->Fight(&player);
+            }
         }
         else if (playerResponse == "examine")
         {

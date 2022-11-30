@@ -3,10 +3,13 @@
 #include <iostream>
 
 Player::Player()
-	: health(100)
-	, attack(1)
-	, equipment()
-	, inventory()
+	: Creature("Player", "You!", 1, 1)
+	, currentArea(nullptr)
+{
+}
+
+Player::Player(int newHealth, int newAttack)
+	: Creature("Player", "You!", newHealth, newAttack)
 	, currentArea(nullptr)
 {
 }
@@ -30,16 +33,6 @@ void Player::Go(Area* newArea)
 		}
     }
 
-}
-
-void Player::SetHealth(int newHealth)
-{
-	health = newHealth;
-}
-
-void Player::SetAttack(int newAttack)
-{
-	attack = newAttack;
 }
 
 void Player::SetLocation(Area* newLocation)

@@ -1,23 +1,17 @@
 #include "Feature.h"
 
 Feature::Feature()
-	: name("")
-	, description("")
+	: Thing("", "")
+{
+}
+
+Feature::Feature(std::string newName, std::string newDescription)
+	: Thing(newName, newDescription)
 {
 }
 
 Feature::~Feature()
 {
-}
-
-void Feature::SetName(std::string newName)
-{
-	name = newName;
-}
-
-void Feature::SetDescription(std::string newDesc)
-{
-	description = newDesc;
 }
 
 std::string Feature::GetName()

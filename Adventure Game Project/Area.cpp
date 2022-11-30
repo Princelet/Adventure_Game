@@ -1,11 +1,22 @@
 #include "Area.h"
+#include "Player.h"
+#include "Feature.h"
+#include "Monster.h"
 #include <iostream>
 
 Area::Area()
-    : name("")
-    , description("")
+    : Thing("", "")
     , contents()
     , exits()
+    , enemy(nullptr)
+{
+}
+
+Area::Area(std::string newName, std::string newDescription)
+    : Thing(newName, newDescription)
+    , contents()
+    , exits()
+    , enemy(nullptr)
 {
 }
 
@@ -13,10 +24,10 @@ Area::~Area()
 {
 }
 
-void Area::LookAround()
+void Area::Look()
 {
-	std::cout << "\nYou look around " << this->name << "." << std::endl;
-    std::cout << this->description << std::endl;
+	std::cout << "\nYou look around " << this->GetName() << "." << std::endl;
+    std::cout << this->GetDescription() << std::endl;
 
     // Contents
     std::cout << "\nYou see:" << std::endl;
@@ -31,7 +42,7 @@ void Area::LookAround()
 
     for (int i = 0; i < exits.size(); ++i)
     {
-        std::cout << this->exits[i]->name << std::endl;
+        std::cout << this->exits[i]->GetName() << std::endl;
     }
 }
 
@@ -84,14 +95,25 @@ void Area::Examine()
     } while (response != "stop");
 }
 
-void Area::SetName(std::string newName)
+void Area::Fight(Player* player)
 {
-    name = newName;
-}
+    std::cout << "There is a " << enemy->GetName() << " in the room!\n" << std::endl;
+    std::cout << "It has " << enemy->GetMaxHealth() << "HP and " << enemy->GetAttack() << "ATK!" << std::endl;
 
-void Area::SetDescription(std::string newDesc)
-{
-    description = newDesc;
+        do {
+
+            std::cout << "The " << enemy->GetName() << "attacks!"
+                << " You take " << enemy->GetAttack() << " damage!" << std::endl;
+            std::cout << "You attack the " << enemy->GetName() << "!"
+            << " You take " << player->GetAttack() << " damage!" << std::endl;
+
+            enemy->ChangeHealth(-player->GetAttack());
+            player->ChangeHealth(-enemy->GetAttack());
+
+        } while (enemy->GetCurrHealth() > 0);
+
+    std::cout << "\nYou defeated the " << enemy->GetName() << "!\n" << std::endl;
+
 }
 
 void Area::AddContents(Feature* newContent)
@@ -99,17 +121,25 @@ void Area::AddContents(Feature* newContent)
     contents.push_back(newContent);
 }
 
+
 void Area::AddExits(Area* newExit)
 {
     exits.push_back(newExit);
-}
-
-std::string Area::GetName()
-{
-    return this->name;
 }
 
 std::vector<Area*> Area::GetExits()
 {
     return this->exits;
 }
+
+
+void Area::AddMonster(Monster* newMonster)
+{
+    enemy = newMonster;
+}
+
+Monster* Area::GetMonster()
+{
+    return enemy;
+}
+
