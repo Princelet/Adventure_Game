@@ -8,6 +8,8 @@ public:
 	Creature(std::string newName, std::string newDescription, int newHealth, int newAttack);
 	~Creature();
 
+	void Look();
+
 	// Setter
 	void SetCurrentHealth(int newHealth);
 	void ChangeHealth(int healthDiff);

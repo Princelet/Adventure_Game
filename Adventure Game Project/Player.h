@@ -12,6 +12,8 @@ public:
 	Player(int newHealth, int newAttack);
 	~Player();
 
+	void Look();
+
 	void Go(Area* newArea);
 	void SetLocation(Area* newLocation);
 	Area* GetLocation();

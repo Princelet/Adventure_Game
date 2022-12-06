@@ -98,22 +98,56 @@ void Area::Examine()
 void Area::Fight(Player* player)
 {
     std::cout << "There is a " << enemy->GetName() << " in the room!\n" << std::endl;
-    std::cout << "It has " << enemy->GetMaxHealth() << "HP and " << enemy->GetAttack() << "ATK!" << std::endl;
+    enemy->Look();
 
-        do {
+    do {
+        std::string response;
+        std::cout << "What do you do?" << std::endl;
+        std::getline(std::cin, response);
 
-            std::cout << "The " << enemy->GetName() << "attacks!"
-                << " You take " << enemy->GetAttack() << " damage!" << std::endl;
-            std::cout << "You attack the " << enemy->GetName() << "!"
-            << " You take " << player->GetAttack() << " damage!" << std::endl;
+        if (response == "fight")
+        {
 
-            enemy->ChangeHealth(-player->GetAttack());
-            player->ChangeHealth(-enemy->GetAttack());
+            do {
 
-        } while (enemy->GetCurrHealth() > 0);
+                std::cout << "The " << enemy->GetName() << " attacks!"
+                    << " You take " << enemy->GetAttack() << " damage!" << std::endl;
+                std::cout << "You attack the " << enemy->GetName() << "!"
+                    << " You take " << player->GetAttack() << " damage!" << std::endl;
 
-    std::cout << "\nYou defeated the " << enemy->GetName() << "!\n" << std::endl;
+                enemy->ChangeHealth(-player->GetAttack());
+                player->ChangeHealth(-enemy->GetAttack());
 
+            } while (enemy->GetCurrHealth() > 0 || player->GetCurrHealth() > 0);
+
+            if (enemy->GetCurrHealth() < 1)
+            {
+
+                std::cout << "\nYou defeated the " << enemy->GetName() << "!\n" << std::endl;
+                enemy = nullptr;
+                return;
+
+            }
+
+            if (player->GetCurrHealth() < 1)
+            {
+
+                std::cout << "\nYou lost to the " << enemy->GetName() << "!" << std::endl;
+                std::cout << "You scramble away and hide until it leaves." << std::endl;
+                return;
+            }
+
+        }
+
+        if (response == "run")
+        {
+            do {
+                player->SetLocation(player->GetLocation()->AttemptGo());
+            } while (player->GetLocationName() == "Room B");
+            std::cout << "You escaped to " << player->GetLocationName() << "." << std::endl;
+            return;
+        }
+    } while (enemy != nullptr);
 }
 
 void Area::AddContents(Feature* newContent)

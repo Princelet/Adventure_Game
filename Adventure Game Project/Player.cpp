@@ -9,13 +9,19 @@ Player::Player()
 }
 
 Player::Player(int newHealth, int newAttack)
-	: Creature("Player", "You!", newHealth, newAttack)
+	: Creature("the Legendary Adventurer", "You!", newHealth, newAttack)
 	, currentArea(nullptr)
 {
 }
 
 Player::~Player()
 {
+}
+
+void Player::Look()
+{
+	std::cout << "You are " << name << "." << std::endl;
+	std::cout << "You have " << attack << "ATK and " << currentHealth << "/" << maxHealth << "HP." << std::endl;
 }
 
 void Player::Go(Area* newArea)

@@ -82,7 +82,7 @@ int main()
 
 
     player.SetLocation(&roomA);
-    std::cout << "You have " << player.GetMaxHealth() << "HP and " << player.GetAttack() << "ATK!" << std::endl;
+    player.Look();
     player.GetLocation()->Look();
 
     do

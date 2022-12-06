@@ -1,4 +1,5 @@
 #include "Creature.h"
+#include <iostream>
 
 Creature::Creature()
 	: Thing("", "")
@@ -18,6 +19,13 @@ Creature::Creature(std::string newName, std::string newDescription, int newHealt
 
 Creature::~Creature()
 {
+}
+
+void Creature::Look()
+{
+	std::cout << "You observe the " << name << "." << std::endl;
+	std::cout << description << std::endl;
+	std::cout << "It has " << attack << "ATK and " << currentHealth << "HP." << std::endl;
 }
 
 void Creature::SetCurrentHealth(int newHealth)
