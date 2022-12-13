@@ -8,6 +8,7 @@
 #include "Area.h"
 #include "Feature.h"
 #include "Monster.h"
+#include "Potion.h"
 
 
 void printPlayer(int HP, int ATK, std::vector<std::string> equip, std::vector<std::string> inv)
@@ -49,9 +50,9 @@ int main()
 
     Player player(30, 5);
 
-    Item potion("Misty Potion", "A healing potion. Restores 10 health.");
+    Potion misty("Misty Potion", "A healing potion. Restores 10 health.", 10);
     Item key("Small Key", "A small key to unlock a locked door.");
-    Item rock("Small Rock", "A small rock found on the ground.");
+    Item rock("Small Rock", "A small rock found on the ground. Could be used as a distraction.");
 
     Feature vines("Vines", "These vines cover the walls of the room.");
     Feature chest("Opened Chest", "This chest looks to have been looted long ago.");
@@ -68,15 +69,18 @@ int main()
 
     roomA.AddContents(&bones);
     roomA.AddContents(&vines);
+    roomA.AddItem(&rock);
     roomA.AddExits(&roomB);
     roomA.AddExits(&roomC);
 
     roomB.AddContents(&chest);
+    roomB.AddItem(&key);
     roomB.AddExits(&roomA);
     roomB.AddMonster(&skeleton);
 
     roomC.AddContents(&vines);
     roomC.AddContents(&chest);
+    roomC.AddItem(&misty);
     roomC.AddExits(&roomA);
 
 
@@ -108,6 +112,10 @@ int main()
         else if (playerResponse == "examine")
         {
             player.GetLocation()->Examine();
+        }
+        else if (playerResponse == "pick up")
+        {
+            player.AddToInventory();
         }
         else if (playerResponse == "escape")
         {

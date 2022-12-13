@@ -1,4 +1,5 @@
 #include "Thing.h"
+#include "Item.h"
 #include <iostream>
 
 Thing::Thing()
@@ -21,6 +22,11 @@ void Thing::Look()
 {
 	std::cout << "This is " << this->GetName() << std::endl;
 	std::cout << this->GetDescription() << std::endl;
+}
+
+void Thing::UseItem(Item* toUse)
+{
+	toUse->Use();
 }
 
 std::string Thing::GetName()

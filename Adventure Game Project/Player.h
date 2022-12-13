@@ -13,15 +13,19 @@ public:
 	~Player();
 
 	void Look();
-
 	void Go(Area* newArea);
+	void AddToInventory();
+
+	// Setters
 	void SetLocation(Area* newLocation);
+
+	// Getters
 	Area* GetLocation();
 	std::string GetLocationName();
 
 private:
-	std::vector<int> equipment;
-	std::vector<int> inventory;
+	std::vector<Item*> equipment;
+	std::vector<Item*> inventory;
 
 	Area* currentArea;
 };

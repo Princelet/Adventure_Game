@@ -28,7 +28,7 @@ void Creature::Look()
 	std::cout << "It has " << attack << "ATK and " << currentHealth << "HP." << std::endl;
 }
 
-void Creature::SetCurrentHealth(int newHealth)
+void Creature::SetCurrHealth(int newHealth)
 {
 	currentHealth = newHealth;
 	if (currentHealth > maxHealth) 

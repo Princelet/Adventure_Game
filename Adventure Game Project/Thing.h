@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 
+class Item;
+
 class Thing
 {
 public:
@@ -9,6 +11,7 @@ public:
 	~Thing();
 
 	void Look();
+	void UseItem(Item* toUse);
 
 	// Getters
 	std::string GetName();

@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Feature.h"
 #include "Monster.h"
+#include "Item.h"
 #include <iostream>
 
 Area::Area()
@@ -35,6 +36,11 @@ void Area::Look()
     for (int i = 0; i < contents.size(); ++i)
     {
         std::cout << this->contents[i]->GetName() << std::endl;
+    }
+
+    for (int i = 0; i < items.size(); ++i)
+    {
+        std::cout << this->items[i]->GetName() << std::endl;
     }
 
     // Areas
@@ -78,6 +84,11 @@ void Area::Examine()
         std::cout << this->contents[i]->GetName() << std::endl;
     }
 
+    for (int i = 0; i < items.size(); ++i)
+    {
+        std::cout << this->items[i]->GetName() << std::endl;
+    }
+
     std::string response;
 
     do
@@ -92,6 +103,15 @@ void Area::Examine()
                 std::cout << "\n" << contents[i]->GetDescription() << "\n" << std::endl;
             }
         }
+
+        for (int i = 0; i < items.size(); ++i)
+        {
+            if (items[i]->GetName() == response)
+            {
+                std::cout << "\n" << items[i]->GetDescription() << "\n" << std::endl;
+            }
+        }
+
     } while (response != "stop");
 }
 
@@ -147,6 +167,31 @@ void Area::Fight(Player* player)
             std::cout << "You escaped to " << player->GetLocationName() << "." << std::endl;
             return;
         }
+
+        if (response == "throw rock")
+        {
+            bool hasRock = false;
+            for (int i = 0; i < items.size(); ++i)
+            {
+                if (items[i]->GetName() == "Small Rock")
+                {
+                    hasRock = true;
+                }
+            }
+            
+            if (hasRock == true)
+            {
+                std::cout << "\nThe " << enemy->GetName() << " is distracted by the rock and chases it as it falls through a crack." << std::endl;
+                std::cout << "Since the opponent is gone, you win the fight.\n" << std::endl;
+                enemy = nullptr;
+                return;
+            }
+            else
+            {
+                std::cout << "\nYou don't have a rock!\n" << std::endl;
+            }
+
+        }
     } while (enemy != nullptr);
 }
 
@@ -161,9 +206,19 @@ void Area::AddExits(Area* newExit)
     exits.push_back(newExit);
 }
 
+void Area::AddItem(Item* newItem)
+{
+    items.push_back(newItem);
+}
+
 std::vector<Area*> Area::GetExits()
 {
     return this->exits;
+}
+
+std::vector<Item*> Area::GetItems()
+{
+    return this->items;
 }
 
 
@@ -171,6 +226,7 @@ void Area::AddMonster(Monster* newMonster)
 {
     enemy = newMonster;
 }
+
 
 Monster* Area::GetMonster()
 {

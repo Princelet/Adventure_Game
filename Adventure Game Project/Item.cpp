@@ -13,3 +13,7 @@ Item::Item(std::string newName, std::string newDescription)
 Item::~Item()
 {
 }
+
+void Item::Use()
+{
+}

@@ -7,6 +7,7 @@
 class Feature;
 class Monster;
 class Player;
+class Item;
 
 class Area : public Thing
 {
@@ -22,16 +23,19 @@ public:
 
 	// Getters
 	std::vector<Area*> GetExits();
+	std::vector<Item*> GetItems();
 	Monster* GetMonster();
 
 	// Setters
 	void AddContents(Feature* newContent);
 	void AddExits(Area* newExit);
 	void AddMonster(Monster* newMonster);
+	void AddItem(Item* newItem);
 
 private:
 	std::vector<Feature*> contents;
 	std::vector<Area*> exits;
+	std::vector<Item*> items;
 	Monster* enemy;
 };
 

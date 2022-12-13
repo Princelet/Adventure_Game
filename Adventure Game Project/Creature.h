@@ -11,7 +11,7 @@ public:
 	void Look();
 
 	// Setter
-	void SetCurrentHealth(int newHealth);
+	void SetCurrHealth(int newHealth);
 	void ChangeHealth(int healthDiff);
 	void SetMaxHealth(int newMaxHealth);
 	void SetAttack(int newAttack);
