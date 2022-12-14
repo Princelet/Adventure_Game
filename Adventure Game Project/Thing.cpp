@@ -24,9 +24,8 @@ void Thing::Look()
 	std::cout << this->GetDescription() << std::endl;
 }
 
-void Thing::UseItem(Item* toUse)
+void Thing::UseItem()
 {
-	toUse->Use();
 }
 
 std::string Thing::GetName()

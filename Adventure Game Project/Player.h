@@ -5,6 +5,8 @@
 #include <vector>
 #include "Area.h"
 
+class Item;
+
 class Player : public Creature
 {
 public:
@@ -14,7 +16,13 @@ public:
 
 	void Look();
 	void Go(Area* newArea);
+	void CheckEncounter();
+
 	void AddToInventory();
+	Item* CheckInv(std::string checker);
+	void ItemList();
+	void UseItem();
+	void RemoveInv(Item* toRemove);
 
 	// Setters
 	void SetLocation(Area* newLocation);

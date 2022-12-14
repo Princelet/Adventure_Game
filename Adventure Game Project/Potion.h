@@ -16,6 +16,5 @@ public:
 
 private:
 	int healingAmount;
-	Player* itemOwner;
 };
 

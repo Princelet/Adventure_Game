@@ -4,6 +4,7 @@
 #include "Monster.h"
 #include "Item.h"
 #include <iostream>
+#include <algorithm>
 
 Area::Area()
     : Thing("", "")
@@ -25,98 +26,95 @@ Area::~Area()
 {
 }
 
+
 void Area::Look()
 {
 	std::cout << "\nYou look around " << this->GetName() << "." << std::endl;
     std::cout << this->GetDescription() << std::endl;
 
-    // Contents
-    std::cout << "\nYou see:" << std::endl;
-
-    for (int i = 0; i < contents.size(); ++i)
-    {
-        std::cout << this->contents[i]->GetName() << std::endl;
-    }
-
-    for (int i = 0; i < items.size(); ++i)
-    {
-        std::cout << this->items[i]->GetName() << std::endl;
-    }
-
-    // Areas
-    std::cout << "\nThe room has exits to areas: " << std::endl;
-
-    for (int i = 0; i < exits.size(); ++i)
-    {
-        std::cout << this->exits[i]->GetName() << std::endl;
-    }
+    ListContents();
+    ListItems();
+    ListExits();
+    ListLockedExits();
 }
 
 Area* Area::AttemptGo()
 {
-    std::cout << "\nThe room has exits to areas: " << std::endl;
-
-    for (int i = 0; i < exits.size(); ++i)
-    {
-        std::cout << this->exits[i]->GetName() << std::endl;
-    }
+    ListExits();
 
     std::string response;
     std::cout << "\nGo where?" << std::endl;
     std::getline(std::cin, response);
 
-    for (int i = 0; i < exits.size(); ++i)
+    Area* checkedExit = nullptr;
+    checkedExit = CheckExits(response);
+    if (checkedExit == nullptr)
     {
-        if (exits[i]->GetName() == response)
-        {
-            return exits[i];
-        }
+        checkedExit = CheckLockedExits(response);
     }
-    return this;
+    return checkedExit;
+}
+
+void Area::AttemptUnlock(Player* player)
+{
+    Item* hasKey = nullptr;
+    Area* checkExit = nullptr;
+    hasKey = player->CheckInv("Small Key");
+
+    if (hasKey != nullptr)
+    {
+        ListLockedExits();
+        std::string response;
+        do {
+            std::cout << "\nWhat do you want to unlock? (Type 'stop' to return)" << std::endl;
+            std::getline(std::cin, response);
+
+            checkExit = CheckLockedExits(response);
+            if (checkExit != nullptr)
+            {
+                UnlockExit(checkExit);
+            }
+
+        } while (response != "stop");
+    }
+    else
+    {
+        std::cout << "\nYou have no keys!" << std::endl;
+    }
 }
 
 void Area::Examine()
 {
-    std::cout << "\nThis room contains: " << std::endl;
-
-    for (int i = 0; i < contents.size(); ++i)
-    {
-        std::cout << this->contents[i]->GetName() << std::endl;
-    }
-
-    for (int i = 0; i < items.size(); ++i)
-    {
-        std::cout << this->items[i]->GetName() << std::endl;
-    }
+    ListContents();
+    ListItems();
 
     std::string response;
+    Thing* exObj = nullptr;
 
     do
     {
         std::cout << "\nWhat would you like to look at? (Type 'stop' to finish examining)\n" << std::endl;
         std::getline(std::cin, response);
 
-        for (int i = 0; i < contents.size(); ++i)
+        if (response != "stop")
         {
-            if (contents[i]->GetName() == response)
+            exObj = CheckContents(response);
+            if (exObj == nullptr)
             {
-                std::cout << "\n" << contents[i]->GetDescription() << "\n" << std::endl;
+                exObj = CheckItems(response);
             }
-        }
 
-        for (int i = 0; i < items.size(); ++i)
-        {
-            if (items[i]->GetName() == response)
-            {
-                std::cout << "\n" << items[i]->GetDescription() << "\n" << std::endl;
-            }
+            std::cout << exObj->GetDescription() << std::endl;
         }
 
     } while (response != "stop");
+
+    exObj = nullptr;
 }
 
 void Area::Fight(Player* player)
 {
+    bool hasRock = false;
     std::cout << "There is a " << enemy->GetName() << " in the room!\n" << std::endl;
     enemy->Look();
 
@@ -170,19 +168,19 @@ void Area::Fight(Player* player)
 
         if (response == "throw rock")
         {
-            bool hasRock = false;
-            for (int i = 0; i < items.size(); ++i)
+            Item* rockCheck = nullptr;
+
+            rockCheck = player->CheckInv("Small Rock");
+            if (rockCheck != nullptr)
             {
-                if (items[i]->GetName() == "Small Rock")
-                {
-                    hasRock = true;
-                }
+                hasRock = true;
             }
             
             if (hasRock == true)
             {
-                std::cout << "\nThe " << enemy->GetName() << " is distracted by the rock and chases it as it falls through a crack." << std::endl;
+                std::cout << "\nThe " << enemy->GetName() << " is distracted by the rock and chases it away." << std::endl;
                 std::cout << "Since the opponent is gone, you win the fight.\n" << std::endl;
+                player->RemoveInv(rockCheck);
                 enemy = nullptr;
                 return;
             }
@@ -195,21 +193,157 @@ void Area::Fight(Player* player)
     } while (enemy != nullptr);
 }
 
+
+void Area::ListItems()
+{
+    std::cout << "\nThe items in the room are: " << std::endl;
+    for (int i = 0; i < items.size(); ++i)
+    {
+        std::cout << "> " << this->items[i]->GetName() << std::endl;
+    }
+}
+
+void Area::ListContents()
+{
+    std::cout << "\nThis features in the room are: " << std::endl;
+
+    for (int i = 0; i < contents.size(); ++i)
+    {
+        std::cout << "> " << this->contents[i]->GetName() << std::endl;
+    }
+}
+
+void Area::ListExits()
+{
+    std::cout << "\nThe room has exits to area(s): " << std::endl;
+
+    for (int i = 0; i < exits.size(); ++i)
+    {
+        std::cout << "> " << this->exits[i]->GetName() << std::endl;
+    }
+}
+
+void Area::ListLockedExits()
+{
+    std::cout << "\nThe room has locked doors to area(s): " << std::endl;
+
+    for (int i = 0; i < lockedExits.size(); ++i)
+    {
+        std::cout << "> " << this->lockedExits[i]->GetName() << " (Requires Key)" << std::endl;
+    }
+}
+
+Item* Area::CheckItems(std::string checker)
+{
+    for (int i = 0; i < items.size(); ++i)
+    {
+        if (items[i]->GetName() == checker)
+        {
+            return items[i];
+        }
+    }
+    return nullptr;
+}
+
+Feature* Area::CheckContents(std::string checker)
+{
+    for (int i = 0; i < contents.size(); ++i)
+    {
+        if (contents[i]->GetName() == checker)
+        {
+            return contents[i];
+        }
+    }
+    return nullptr;
+}
+
+Area* Area::CheckExits(std::string checker)
+{
+    for (int i = 0; i < exits.size(); ++i)
+    {
+        if (exits[i]->GetName() == checker)
+        {
+            return exits[i];
+        }
+    }
+    return this;
+}
+
+Area* Area::CheckLockedExits(std::string checker)
+{
+    {
+        for (int i = 0; i < lockedExits.size(); ++i)
+        {
+            if (lockedExits[i]->GetName() == checker)
+            {
+                return lockedExits[i];
+            }
+        }
+    }
+
+    return this;
+}
+
+void Area::RemoveItem(int itemPos)
+{
+    std::swap(items[itemPos], items.back());
+    items.pop_back();
+}
+
+void Area::RemoveItem(Item* itemToRemove)
+{
+    std::string itemName = itemToRemove->GetName();
+    for (int i = 0; i < items.size(); ++i)
+    {
+        if (items[i]->GetName() == itemName)
+        {
+            std::swap(items[i], items.back());
+            items.pop_back();
+        }
+    }
+}
+
+void Area::UnlockExit(Area* newExit)
+{
+    std::string exit = newExit->GetName();
+    for (int i = 0; i < exits.size(); ++i)
+    {
+        if (exits[i]->GetName() == newExit->GetName())
+        {
+            std::swap(exits[i], exits.back());
+            exits.pop_back();
+        }
+    }
+    exits.push_back(newExit);
+
+}
+
+
 void Area::AddContents(Feature* newContent)
 {
     contents.push_back(newContent);
 }
-
 
 void Area::AddExits(Area* newExit)
 {
     exits.push_back(newExit);
 }
 
+void Area::AddLockedExits(Area* newLExit)
+{
+    lockedExits.push_back(newLExit);
+}
+
 void Area::AddItem(Item* newItem)
 {
     items.push_back(newItem);
 }
+
+void Area::AddMonster(Monster* newMonster)
+{
+    enemy = newMonster;
+}
+
 
 std::vector<Area*> Area::GetExits()
 {
@@ -221,15 +355,12 @@ std::vector<Item*> Area::GetItems()
     return this->items;
 }
 
-
-void Area::AddMonster(Monster* newMonster)
+std::vector<Item*> Area::SetItems()
 {
-    enemy = newMonster;
+    return items;
 }
-
 
 Monster* Area::GetMonster()
 {
     return enemy;
 }
-

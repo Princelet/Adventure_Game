@@ -3,6 +3,8 @@
 
 #include <string>
 
+class Player;
+
 class Item : public Thing
 {
 public:
@@ -11,5 +13,9 @@ public:
 	~Item();
 	
 	virtual void Use();
+	void SetOwner(Player* newOwner);
+
+protected:
+	Player* itemOwner;
 };
 

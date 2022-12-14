@@ -10,40 +10,6 @@
 #include "Monster.h"
 #include "Potion.h"
 
-
-void printPlayer(int HP, int ATK, std::vector<std::string> equip, std::vector<std::string> inv)
-{
-    std::cout << "You currently have " << HP << "HP.\n"
-        << "Your attack is " << ATK << ".\n\n"
-        << "Your equipment is currently:\n";
-
-        for (int i = 0; i < equip.size(); ++i)
-        {
-            std::cout << equip[i] << "\n";
-        }
-
-        std::cout << "\nYour inventory currently contains:\n";
-
-        for (int i = 0; i < inv.size(); ++i)
-        {
-            std::cout << inv[i] << "\n";
-        }
-}
-
-void printItem(std::string name, std::string desc)
-{
-    std::cout << "The item is a(n) " << name << ".\n"
-        << "Description: " << desc << "\n\n";
-}
-
-void printMonster(std::string name, std::string desc, int ATK, int HP)
-{
-    std::cout << "The item is a(n) " << name << ".\n"
-        << "Description: " << desc
-        << "It has " << HP << "HP.\n"
-        << "It's attack is " << ATK << ".\n\n";
-}
-
 int main()
 {
     std::string playerResponse = "";
@@ -53,19 +19,21 @@ int main()
     Potion misty("Misty Potion", "A healing potion. Restores 10 health.", 10);
     Item key("Small Key", "A small key to unlock a locked door.");
     Item rock("Small Rock", "A small rock found on the ground. Could be used as a distraction.");
+    Item treasure("Magical Ultimate Treasure of Destiny", "Useless shiny thing. Enjoy.");
 
     Feature vines("Vines", "These vines cover the walls of the room.");
     Feature chest("Opened Chest", "This chest looks to have been looted long ago.");
+    Feature chest2("Soldered Chest", "This chest has been soldered shut. Too bad.");
     Feature bones("Cracked Bones", "The bones laying on the ground are cracked and covered in web.");
 
     Monster goblin("Goblin Warrior", "A frail goblin warrior. Small and nimble.", 5, 3);
     Monster bat("Cave Bat", "A little guy.", 3, 2);
     Monster skeleton("Skeleton Knight", "A tough armoured knight of the undead.", 10, 6);
 
-
     Area roomA("Room A", "A square room filled with pebbles and rocks.");
     Area roomB("Room B", "A long room that is empty besides a few old pieces of furniture.");
     Area roomC("Room C", "A compact room filled with foliage and broken equipment.");
+    Area roomD("Room D", "A huge room. The treasure lies here.");
 
     roomA.AddContents(&bones);
     roomA.AddContents(&vines);
@@ -76,6 +44,7 @@ int main()
     roomB.AddContents(&chest);
     roomB.AddItem(&key);
     roomB.AddExits(&roomA);
+    roomB.AddLockedExits(&roomD);
     roomB.AddMonster(&skeleton);
 
     roomC.AddContents(&vines);
@@ -83,6 +52,10 @@ int main()
     roomC.AddItem(&misty);
     roomC.AddExits(&roomA);
 
+    roomC.AddContents(&chest2);
+    roomC.AddContents(&chest);
+    roomD.AddItem(&treasure);
+    roomD.AddExits(&roomB);
 
 
     player.SetLocation(&roomA);
@@ -91,7 +64,7 @@ int main()
 
     do
     {
-        std::cout << "\n\nWhat do you want to do?" << std::endl;
+        std::cout << "\nWhat do you want to do?" << std::endl;
         std::getline(std::cin, playerResponse);
 
         if (playerResponse == "look")
@@ -100,14 +73,17 @@ int main()
         }
         else if (playerResponse == "go")
         {
-            player.SetLocation(player.GetLocation()->AttemptGo());
+            Area* checkedExit = player.GetLocation()->AttemptGo();
 
-            std::cout << "\nYou are now in " << player.GetLocationName() << ".\n\n" << std::endl;
+            player.SetLocation(checkedExit);
 
-            if (player.GetLocation()->GetMonster() != nullptr)
-            {
-                player.GetLocation()->Fight(&player);
-            }
+            std::cout << "\nYou are now in " << player.GetLocationName() << "." << std::endl;
+
+            player.CheckEncounter();
+        }
+        else if (playerResponse == "unlock")
+        {
+            player.GetLocation()->AttemptUnlock(&player);
         }
         else if (playerResponse == "examine")
         {
@@ -117,6 +93,14 @@ int main()
         {
             player.AddToInventory();
         }
+        else if (playerResponse == "inventory")
+        {
+            player.ItemList();
+        }
+        else if (playerResponse == "use")
+        {
+            player.UseItem();
+        }
         else if (playerResponse == "escape")
         {
             std::cout << "\n\nThe floor beneath you crumbles.\n\n" << std::endl;
@@ -124,7 +108,7 @@ int main()
         }
         else
         {
-            std::cout << "\n\nThat don't work so good!\n\n" << std::endl;
+            std::cout << "\nBad input! Try something else." << std::endl;
         }
 
     } while (playerResponse != "escape");

@@ -2,7 +2,6 @@
 #include "Area.h"
 #include "Item.h"
 #include <iostream>
-#include <algorithm>
 
 Player::Player()
 	: Creature("Player", "You!", 1, 1)
@@ -50,29 +49,104 @@ void Player::SetLocation(Area* newLocation)
 
 void Player::AddToInventory()
 {
-	std::cout << "The items in the room are: " << std::endl;
-	for (int i = 0; i < GetLocation()->GetItems().size(); ++i)
+	GetLocation()->ListItems();
+
+	if (GetLocation()->GetItems().size() != 0)
 	{
-		std::cout << this->GetLocation()->GetItems()[i]->GetName() << std::endl;
+		std::string response;
+		std::cout << "\n\nWhat do you want to pick up?" << std::endl;
+		std::getline(std::cin, response);
+
+		Item* toGet = nullptr;
+		toGet = GetLocation()->CheckItems(response);
+
+		inventory.push_back(toGet);
+		GetLocation()->RemoveItem(toGet);
+		toGet->SetOwner(this);
+	}
+	else
+	{
+		std::cout << "There's nothing to pick up!" << std::endl;
 	}
 
-	std::string response;
-	std::cout << "\n\nWhat do you want to pick up?" << std::endl;
-	std::getline(std::cin, response);
+}
 
-	for (int i = 0; i < GetLocation()->GetItems().size(); ++i)
-	{
-		if (GetLocation()->GetItems()[i]->GetName() == response)
+Item* Player::CheckInv(std::string checker)
+{
+		for (int i = 0; i < inventory.size(); ++i)
 		{
-			inventory.push_back(GetLocation()->GetItems()[i]);
+			if (inventory[i]->GetName() == checker)
+			{
+				return inventory[i];
+			}
+		}
+	return nullptr;
+}
 
-			/*
-			std::swap(GetLocation()->GetItems()[i], GetLocation()->GetItems().back());
-			GetLocation()->GetItems().pop_back();
-			*/
+void Player::ItemList()
+{
+	if (inventory.size() > 0)
+	{
+		std::cout << "The items you have are: " << std::endl;
+		for (int i = 0; i < inventory.size(); ++i)
+		{
+			std::cout << "> " << this->inventory[i]->GetName() << std::endl;
+		}
+}
+	else
+	{
+		std::cout << "You have no items." << std::endl;
+	}
+}
+
+void Player::CheckEncounter()
+{
+	if (GetLocation()->GetMonster() != nullptr)
+	{
+		GetLocation()->Fight(this);
+	}
+}
+
+void Player::UseItem()
+{
+	std::string response;
+	Item* toUse = nullptr;
+
+	do
+	{
+		ItemList();
+
+		std::cout << "\nWhat do you want to use? (Type 'stop' to return)" << std::endl;
+		std::getline(std::cin, response);
+
+		if (response != "stop")
+		{
+			toUse = CheckInv(response);
+			if (toUse != nullptr)
+			{
+				toUse->Use();
+				RemoveInv(toUse);
+			}
+			else
+			{
+				std::cout << "\nYou don't have that!" << std::endl;
+			}
+		}
+
+	} while (response != "stop");
+}
+
+void Player::RemoveInv(Item* toRemove)
+{
+	std::string itemName = toRemove->GetName();
+	for (int i = 0; i < inventory.size(); ++i)
+	{
+		if (inventory[i]->GetName() == itemName)
+		{
+			std::swap(inventory[i], inventory.back());
+			inventory.pop_back();
 		}
 	}
-
 }
 
 Area* Player::GetLocation()

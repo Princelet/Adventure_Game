@@ -11,7 +11,7 @@ public:
 	~Thing();
 
 	void Look();
-	void UseItem(Item* toUse);
+	void UseItem();
 
 	// Getters
 	std::string GetName();
