@@ -10,6 +10,22 @@
 #include "Monster.h"
 #include "Potion.h"
 
+void CommandList()
+{
+    std::cout << std::endl;
+    std::cout << "All commands are case sensitive." << std::endl;
+    std::cout << std::endl;
+    std::cout << "The standard commands are:" << std::endl;
+    std::cout << "'inventory' - Look at the items the player has." << std::endl;
+    std::cout << "'look' - Look around the current room." << std::endl;
+    std::cout << "'examine' - Look at a specific item or feature." << std::endl;
+    std::cout << "'pick up' - Look at the items the player has." << std::endl;
+    std::cout << "'go' - Go to an available connected room." << std::endl;
+    std::cout << "'unlock' - Unlock a locked door, requires key." << std::endl;
+    std::cout << "'commands' - Displays this list." << std::endl;
+    std::cout << std::endl;
+}
+
 int main()
 {
     std::string playerResponse = "";
@@ -64,7 +80,7 @@ int main()
 
     do
     {
-        std::cout << "\nWhat do you want to do?" << std::endl;
+        std::cout << "\nWhat do you want to do? (Type 'commands' for a list)" << std::endl;
         std::getline(std::cin, playerResponse);
 
         if (playerResponse == "look")
@@ -100,6 +116,10 @@ int main()
         else if (playerResponse == "use")
         {
             player.UseItem();
+        }
+        else if (playerResponse == "commands")
+        {
+            CommandList();
         }
         else if (playerResponse == "escape")
         {

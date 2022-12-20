@@ -120,7 +120,7 @@ void Area::Fight(Player* player)
 
     do {
         std::string response;
-        std::cout << "What do you do?" << std::endl;
+        std::cout << "What do you do? (Type 'commands' for a list)" << std::endl;
         std::getline(std::cin, response);
 
         if (response == "fight")
@@ -156,7 +156,18 @@ void Area::Fight(Player* player)
             }
 
         }
-
+        if (response == "commands")
+        {
+            std::cout << std::endl;
+            std::cout << "All commands are case sensitive." << std::endl;
+            std::cout << std::endl;
+            std::cout << "The battle commands are:" << std::endl;
+            std::cout << "'fight' - Enter an auto-battle sequence until either participant dies." << std::endl;
+            std::cout << "'throw rock' - Use a distraction item. The battle will automatically end." << std::endl;
+            std::cout << "'run' - Escape to a connected room. The enemy will be there when you return." << std::endl;
+            std::cout << "'commands' - Displays this list." << std::endl;
+            std::cout << std::endl;
+        }
         if (response == "run")
         {
             do {
@@ -165,7 +176,6 @@ void Area::Fight(Player* player)
             std::cout << "You escaped to " << player->GetLocationName() << "." << std::endl;
             return;
         }
-
         if (response == "throw rock")
         {
             Item* rockCheck = nullptr;
